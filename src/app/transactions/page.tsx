@@ -1,9 +1,8 @@
 // File: /app/transactions/page.tsx
 
 import Link from "next/link";
-import { getTransactions, deleteTransaction } from "@/lib/actions";
+import { getTransactions } from "@/lib/actions";
 import { ITransaction } from "@/lib/types";
-import { CATEGORIES } from "@/lib/constants";
 import { format } from "date-fns";
 
 export default async function TransactionsPage() {
