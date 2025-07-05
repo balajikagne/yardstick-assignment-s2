@@ -1,12 +1,15 @@
-// File: /app/transactions/[id]/page.tsx
+// File: app/transactions/[id]/page.tsx
 
-import TransactionForm from "../../../components/TransactionForm";
 import { getTransactionById } from "@/lib/actions";
+import TransactionForm from "@/components/TransactionForm";
 import { notFound } from "next/navigation";
 
-export default async function EditTransactionPage({ params }: { params: { id: string } }) {
+export default async function EditTransactionPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const transaction = await getTransactionById(params.id);
-
   if (!transaction) return notFound();
 
   return (
