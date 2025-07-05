@@ -3,7 +3,20 @@
 import { connectToDB } from "./db";
 import { Transaction } from "./models/Transaction";
 import { ITransaction } from "./types";
+
+
+/**
+ * Fetch all transactions and convert MongoDB _id to id
+ */
 import { Types } from "mongoose";
+
+type LeanTransaction = {
+  _id: Types.ObjectId;
+  title: string;
+  amount: number;
+  category: string;
+  date: string;
+};
 
 /**
  * Fetch all transactions and convert MongoDB _id to id
@@ -11,9 +24,9 @@ import { Types } from "mongoose";
 export const getTransactions = async (): Promise<ITransaction[]> => {
   await connectToDB();
 
-  const transactions = await Transaction.find().lean();
+  const transactions = await Transaction.find().lean<LeanTransaction[]>();
 
-  return transactions.map((t: any) => ({
+  return transactions.map((t) => ({
     id: t._id.toString(),
     title: t.title,
     amount: t.amount,
@@ -22,25 +35,27 @@ export const getTransactions = async (): Promise<ITransaction[]> => {
   }));
 };
 
+/**
+ * Fetch a single transaction by ID
+ */
 export const getTransactionById = async (id: string): Promise<ITransaction | null> => {
   await connectToDB();
 
   if (!Types.ObjectId.isValid(id)) return null;
 
-  const t = await Transaction.findById(id).lean();
+  const t = await Transaction.findById(id).lean<LeanTransaction>();
 
   if (!t) return null;
 
-  const tx = t as any;
-
   return {
-    id: tx._id.toString(),
-    title: tx.title,
-    amount: tx.amount,
-    category: tx.category,
-    date: tx.date,
+    id: t._id.toString(),
+    title: t.title,
+    amount: t.amount,
+    category: t.category,
+    date: t.date,
   };
 };
+
 
 
 /**
